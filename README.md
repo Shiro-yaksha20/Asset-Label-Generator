@@ -4,7 +4,7 @@ A free, open-source static web app for generating printable asset labels with QR
 
 ## Live Demo
 
-- GitHub Pages: `https://<your-username>.github.io/asset-label-generator/`
+- GitHub Pages: https://shiro-yaksha20.github.io/Asset-Label-Generator/
 
 
 ## How to Use

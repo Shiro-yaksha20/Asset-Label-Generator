@@ -124,11 +124,11 @@
       return;
     }
 
-    const scale = Math.min(
-      1,
+    const fitScale = Math.min(
       viewportWidth / labelWidth,
       viewportHeight / labelHeight,
     );
+    const scale = Math.min(4.5, fitScale);
     el.previewCanvas.style.transform = `scale(${scale})`;
   }
 
@@ -240,17 +240,28 @@
     await renderPreview();
   }
 
+  function setExportButtonState(button, label, busy) {
+    button.textContent = busy ? "Working…" : label;
+    button.disabled = busy;
+    button.setAttribute("aria-busy", busy ? "true" : "false");
+  }
+
   async function handleExportPdf() {
     if (!LabelGen.Export || typeof LabelGen.Export.exportPdf !== "function") {
       setRuntimeWarning("Export module is not ready yet.");
       return;
     }
 
-    await LabelGen.Export.exportPdf(
-      state.rows,
-      getRenderOptions(),
-      setRuntimeWarning,
-    );
+    setExportButtonState(el.exportPdf, "Export PDF", true);
+    try {
+      await LabelGen.Export.exportPdf(
+        state.rows,
+        getRenderOptions(),
+        setRuntimeWarning,
+      );
+    } finally {
+      setExportButtonState(el.exportPdf, "Export PDF", false);
+    }
   }
 
   async function handleExportPng() {
@@ -259,11 +270,16 @@
       return;
     }
 
-    await LabelGen.Export.exportPng(
-      state.rows,
-      getRenderOptions(),
-      setRuntimeWarning,
-    );
+    setExportButtonState(el.exportPng, "Export PNG", true);
+    try {
+      await LabelGen.Export.exportPng(
+        state.rows,
+        getRenderOptions(),
+        setRuntimeWarning,
+      );
+    } finally {
+      setExportButtonState(el.exportPng, "Export PNG", false);
+    }
   }
 
   function bindEvents() {
